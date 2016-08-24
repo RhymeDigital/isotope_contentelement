@@ -15,6 +15,7 @@ namespace Isotope\ContentElement;
 
 use Isotope\ContentElement\ContentElement as IsoContentElement;
 use Isotope\Model\Product as ProductModel;
+use Isotope\Interfaces\IsotopeProduct;
 use Isotope\Module\ProductReader as ProductReaderModule;
 
 /**
@@ -45,6 +46,10 @@ class Product extends IsoContentElement
 			return;
 		}
 		
+		global $objPage;
+		$strTempPageTitle 	= $objPage->pageTitle;
+		$strTempPageDesc 	= $objPage->description;
+		
 		$objModel = $this->objModel->cloneOriginal();
 		$objModel->type = 'iso_productreader';
 		
@@ -54,7 +59,7 @@ class Product extends IsoContentElement
             $strKey = 'auto_item';
         }
         $varTempProduct = \Input::get($strKey);
-        $varTempProduct = \Input::setGet($strKey, $objProduct->alias);
+        \Input::setGet($strKey, $objProduct->alias);
 		
 		// Generate the module
 		$objModule 						= new ProductReaderModule($objModel);
@@ -67,8 +72,60 @@ class Product extends IsoContentElement
         $this->Template->back           = '';
 		
 		// Put the GET value back
-        $varTempProduct = \Input::setGet($strKey, $varTempProduct);
+        \Input::setGet($strKey, $varTempProduct);
+        
+        // Put page stuff back
+        $objPage->pageTitle 	= $strTempPageTitle;
+        $objPage->description 	= $strTempPageDesc;
+        $GLOBALS['TL_KEYWORDS']	= str_replace(', ' . $objProduct->meta_keywords, '', $GLOBALS['TL_KEYWORDS']);
+        static::removeCanonicalProductUrls($objProduct);
 	}
+
+    /**
+     * Removes canonical product URLs to the document
+     * @param   IsotopeProduct
+     */
+    protected static function removeCanonicalProductUrls(IsotopeProduct $objProduct)
+    {
+        global $objPage;
+        $arrPageIds   = \Database::getInstance()->getChildRecords($objPage->rootId, \PageModel::getTable());
+        $arrPageIds[] = $objPage->rootId;
+
+        // Find the categories in the current root
+        $arrCategories = array_intersect($objProduct->getCategories(), $arrPageIds);
+
+        foreach ($arrCategories as $intPage) {
+
+            // Do not use the index page as canonical link
+            if ($objPage->alias == 'index' && count($arrCategories) > 1) {
+                continue;
+            }
+
+            // Current page is the primary one, do not generate canonical link
+            if ($intPage == $objPage->id) {
+                break;
+            }
+
+            if (($objJumpTo = \PageModel::findWithDetails($intPage)) !== null) {
+
+                $strDomain = \Environment::get('base');
+
+                // Overwrite the domain
+                if ($objJumpTo->dns != '') {
+                    $strDomain = ($objJumpTo->useSSL ? 'https://' : 'http://') . $objJumpTo->dns . TL_PATH . '/';
+                }
+
+				foreach ($GLOBALS['TL_HEAD'] as $key=>$head) {
+					$strLink = sprintf('<link rel="canonical" href="%s">', $strDomain . $objProduct->generateUrl($objJumpTo));
+					if ($head == $strLink) {
+						unset($GLOBALS['TL_HEAD'][$key]);
+					}
+				}
+
+                break;
+            }
+        }
+    }
 
 	
 	/**
