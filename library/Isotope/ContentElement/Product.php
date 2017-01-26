@@ -41,7 +41,7 @@ class Product extends IsoContentElement
 			return;
 		}
 		
-		$objProduct = ProductModel::findByPk($this->iso_product);
+		$objProduct = ProductModel::findAvailableByIdOrAlias($this->iso_product);
 		if ($objProduct === null) {
 			return;
 		}
@@ -65,6 +65,7 @@ class Product extends IsoContentElement
 		$objModule 						= new ProductReaderModule($objModel);
 		$objModule->iso_reader_layout 	= $this->iso_readerTpl;
 		$objModule->customTpl 			= $this->iso_moduleTpl;
+		$objModule->iso_display404Page	= false;
 		
 		$this->Template->content 		= $objModule->generate();
 		$this->Template->content 		= static::replaceSectionsOfString($this->Template->content, '<p class="back"', '</p>'); // Remove the back button
