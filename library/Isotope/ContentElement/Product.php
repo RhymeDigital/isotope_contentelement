@@ -31,22 +31,40 @@ class Product extends IsoContentElement
 	 */
 	protected $strTemplate = 'ce_iso_product';
 
+	/**
+	 * Product
+	 * @var object|null
+	 */
+	protected $objProduct;
+
+
+	/**
+	 * Parse the template
+	 *
+	 * @return string
+	 */
+	public function generate()
+	{
+		if (!$this->iso_product) {
+			return '';
+		}
+		
+		$this->objProduct = ProductModel::findAvailableByIdOrAlias($this->iso_product);
+		if ($this->objProduct === null) {
+			return '';
+		}
+		
+		return parent::generate();
+	}
+
 
 	/**
 	 * Generate the content element
 	 */
 	protected function compile()
 	{
-		if (!$this->iso_product) {
-			return;
-		}
-		
-		$objProduct = ProductModel::findAvailableByIdOrAlias($this->iso_product);
-		if ($objProduct === null) {
-			return;
-		}
-		
 		global $objPage;
+		
 		$strTempPageTitle 	= $objPage->pageTitle;
 		$strTempPageDesc 	= $objPage->description;
 		
@@ -59,7 +77,7 @@ class Product extends IsoContentElement
             $strKey = 'auto_item';
         }
         $varTempProduct = \Input::get($strKey);
-        \Input::setGet($strKey, $objProduct->alias);
+        \Input::setGet($strKey, $this->objProduct->alias);
 		
 		// Generate the module
 		$objModule 						= new ProductReaderModule($objModel);
@@ -78,8 +96,8 @@ class Product extends IsoContentElement
         // Put page stuff back
         $objPage->pageTitle 	= $strTempPageTitle;
         $objPage->description 	= $strTempPageDesc;
-        $GLOBALS['TL_KEYWORDS']	= str_replace(', ' . $objProduct->meta_keywords, '', $GLOBALS['TL_KEYWORDS']);
-        static::removeCanonicalProductUrls($objProduct);
+        $GLOBALS['TL_KEYWORDS']	= str_replace(', ' . $this->objProduct->meta_keywords, '', $GLOBALS['TL_KEYWORDS']);
+        static::removeCanonicalProductUrls($this->objProduct);
 	}
 
     /**
