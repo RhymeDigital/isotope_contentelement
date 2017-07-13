@@ -27,7 +27,7 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['iso_product'] = array
 	'exclude'                 => true,
 	'filter'                  => true,
 	'inputType'               => 'select',
-	'foreignKey'        	  => \Isotope\Model\Product::getTable().'.name',
+	'options_callback'     	  => array('Isotope\Backend\ContentElement\ProductCallbacks', 'run'),
     'eval'                    => array('mandatory'=>true, 'chosen'=>true, 'tl_class'=>'w50'),
 	'sql'                     => "int(10) NOT NULL default '0'"
 );
