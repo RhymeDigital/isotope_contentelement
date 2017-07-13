@@ -45,11 +45,22 @@ class Product extends IsoContentElement
 	 */
 	public function generate()
 	{
+		if (TL_MODE === 'BE')
+		{
+			$this->objProduct = ProductModel::findByPk($this->iso_product);
+			
+			$objTemplate = new \BackendTemplate($this->strTemplate);
+			$objTemplate->content = $this->objProduct !== null ? $this->objProduct->name : 'No product found';
+			
+			return $objTemplate->parse();
+		}
+		
 		if (!$this->iso_product) {
 			return '';
 		}
 		
 		$this->objProduct = ProductModel::findAvailableByIdOrAlias($this->iso_product);
+		
 		if ($this->objProduct === null) {
 			return '';
 		}
