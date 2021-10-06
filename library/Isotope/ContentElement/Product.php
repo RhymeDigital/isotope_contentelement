@@ -13,6 +13,9 @@
 
 namespace Isotope\ContentElement;
 
+use Contao\Input;
+use Contao\StringUtil;
+use Contao\BackendTemplate;
 use Isotope\ContentElement\ContentElement as IsoContentElement;
 use Isotope\Model\Product as ProductModel;
 use Isotope\Interfaces\IsotopeProduct;
@@ -49,7 +52,7 @@ class Product extends IsoContentElement
 		{
 			$this->objProduct = ProductModel::findByPk($this->iso_product);
 			
-			$objTemplate = new \BackendTemplate($this->strTemplate);
+			$objTemplate = new BackendTemplate($this->strTemplate);
 			$objTemplate->content = $this->objProduct !== null ? $this->objProduct->name : 'No product found';
 			
 			return $objTemplate->parse();
@@ -75,7 +78,7 @@ class Product extends IsoContentElement
 	protected function compile()
 	{
 		global $objPage;
-		
+
 		$strTempPageTitle 	= $objPage->pageTitle;
 		$strTempPageDesc 	= $objPage->description;
 		
@@ -87,14 +90,18 @@ class Product extends IsoContentElement
         if ($GLOBALS['TL_CONFIG']['useAutoItem'] && in_array($strKey, $GLOBALS['TL_AUTO_ITEM'])) {
             $strKey = 'auto_item';
         }
-        $varTempProduct = \Input::get($strKey);
-        \Input::setGet($strKey, $this->objProduct->alias);
+        $varTempProduct = Input::get($strKey);
+        Input::setGet($strKey, $this->objProduct->alias);
 		
 		// Generate the module
-		$objModule 						= new ProductReaderModule($objModel);
-		$objModule->iso_reader_layout 	= $this->iso_readerTpl;
-		$objModule->customTpl 			= $this->iso_moduleTpl;
-		$objModule->iso_display404Page	= false;
+		$objModule 						    = new ProductReaderModule($objModel);
+		$objModule->iso_reader_layout 	    = $this->iso_readerTpl;
+		$objModule->customTpl 			    = $this->iso_moduleTpl;
+		$objModule->iso_buttons             = StringUtil::deserialize($this->iso_buttons, true);
+        $objModule->iso_use_quantity        = $this->iso_use_quantity;
+		$objModule->iso_addProductJumpTo    = $this->iso_addProductJumpTo;
+        $objModule->iso_wishlistJumpTo      = $this->iso_wishlistJumpTo;
+		$objModule->iso_display404Page	    = false;
 		
 		$this->Template->content 		= $objModule->generate();
 		$this->Template->content 		= static::replaceSectionsOfString($this->Template->content, '<p class="back"', '</p>'); // Remove the back button
