@@ -15,7 +15,9 @@
 /**
  * Register PSR-0 namespace
  */
-NamespaceClassLoader::add('Isotope', 'system/modules/isotope_contentelement/library');
+if (class_exists('NamespaceClassLoader')) {
+    NamespaceClassLoader::add('Isotope', 'system/modules/isotope_contentelement/library');
+}
 
 
 /**

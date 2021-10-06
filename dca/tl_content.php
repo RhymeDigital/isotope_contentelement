@@ -49,9 +49,12 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['iso_moduleTpl'] = array
     'sql'                     => "varchar(64) NOT NULL default ''",
 );
 
+// Copy fields directly from tl_module
 $GLOBALS['TL_DCA']['tl_content']['fields']['iso_readerTpl']         = $GLOBALS['TL_DCA']['tl_module']['fields']['iso_reader_layout'];
 $GLOBALS['TL_DCA']['tl_content']['fields']['iso_gallery']           = $GLOBALS['TL_DCA']['tl_module']['fields']['iso_gallery'];
 $GLOBALS['TL_DCA']['tl_content']['fields']['iso_use_quantity']      = $GLOBALS['TL_DCA']['tl_module']['fields']['iso_use_quantity'];
 $GLOBALS['TL_DCA']['tl_content']['fields']['iso_buttons']           = $GLOBALS['TL_DCA']['tl_module']['fields']['iso_buttons'];
 $GLOBALS['TL_DCA']['tl_content']['fields']['iso_addProductJumpTo']  = $GLOBALS['TL_DCA']['tl_module']['fields']['iso_addProductJumpTo'];
 $GLOBALS['TL_DCA']['tl_content']['fields']['iso_wishlistJumpTo']    = $GLOBALS['TL_DCA']['tl_module']['fields']['iso_wishlistJumpTo'];
+$GLOBALS['TL_DCA']['tl_content']['fields']['iso_disable_options']   = $GLOBALS['TL_DCA']['tl_module']['fields']['iso_disable_options'];
+$GLOBALS['TL_DCA']['tl_content']['fields']['iso_includeMessages']   = $GLOBALS['TL_DCA']['tl_module']['fields']['iso_includeMessages'];
