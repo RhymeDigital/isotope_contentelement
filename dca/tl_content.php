@@ -14,8 +14,8 @@
  * Palettes
  */
 $GLOBALS['TL_DCA']['tl_content']['palettes']['iso_product'] = str_replace(
-    ['{title_legend},name,headline,type', '{config_legend},', ',customTpl'],
-    ['{type_legend},type,headline', '{config_legend},iso_product,', ',iso_moduleTpl'],
+    ['{title_legend},name,headline,type', '{config_legend},', ',iso_reader_layout,', ',customTpl'],
+    ['{type_legend},type,headline', '{config_legend},iso_product,', ',iso_readerTpl,', ',iso_moduleTpl'],
     $GLOBALS['TL_DCA']['tl_module']['palettes']['iso_productreader']
 );
 
