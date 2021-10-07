@@ -20,7 +20,7 @@ class ProductCallbacks extends \Backend
 	{
 		$arrOptions = array();
 		
-		$objProducts = \Database::getInstance()->prepare("SELECT * FROM tl_iso_product")->execute();
+		$objProducts = \Database::getInstance()->prepare("SELECT * FROM tl_iso_product WHERE pid=0")->execute();
 		if ($objProducts->numRows)
 		{
 			while ($objProducts->next())
