@@ -58,3 +58,5 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['iso_addProductJumpTo']  = $GLOBALS['
 $GLOBALS['TL_DCA']['tl_content']['fields']['iso_wishlistJumpTo']    = $GLOBALS['TL_DCA']['tl_module']['fields']['iso_wishlistJumpTo'];
 $GLOBALS['TL_DCA']['tl_content']['fields']['iso_disable_options']   = $GLOBALS['TL_DCA']['tl_module']['fields']['iso_disable_options'];
 $GLOBALS['TL_DCA']['tl_content']['fields']['iso_includeMessages']   = $GLOBALS['TL_DCA']['tl_module']['fields']['iso_includeMessages'];
+
+$GLOBALS['TL_DCA']['tl_content']['fields']['iso_readerTpl']['sql']  = "TINYTEXT NULL";
